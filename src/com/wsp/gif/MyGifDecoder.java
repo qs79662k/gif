@@ -13,49 +13,49 @@ import java.util.List;
 
 public class MyGifDecoder {
 
-	private String signature = "";	//gifÎÄ¼ş±êÊ¶¡¢°æ±¾
+	private String signature = "";	//gifæ–‡ä»¶æ ‡è¯†ã€ç‰ˆæœ¬
 	private String version = "";
-	private int width;	//gif¶¯Í¼È«¾Ö¿í¡¢¸ß
+	private int width;	//gifåŠ¨å›¾å…¨å±€å®½ã€é«˜
 	private int height;	
-	private boolean isColorTable;	//ÊÇ·ñ´æÔÚÈ«¾ÖÑÕÉ«±í
+	private boolean isColorTable;	//æ˜¯å¦å­˜åœ¨å…¨å±€é¢œè‰²è¡¨
 	@SuppressWarnings("unused")
-	private int colorResolution;	//²ÊÉ«·Ö±æÂÊ
-	private int[] colorTable;	//È«¾ÖÑÕÉ«±í
+	private int colorResolution;	//å½©è‰²åˆ†è¾¨ç‡
+	private int[] colorTable;	//å…¨å±€é¢œè‰²è¡¨
 	@SuppressWarnings("unused")
-	private int backgroundColorIndex;	//È«¾Ö±³¾°É«Ë÷Òı
+	private int backgroundColorIndex;	//å…¨å±€èƒŒæ™¯è‰²ç´¢å¼•
 	@SuppressWarnings("unused")
-	private int pixelAspectRation;	//Í¼ÏñÖĞÏñËØ¿í¸ß±È
+	private int pixelAspectRation;	//å›¾åƒä¸­åƒç´ å®½é«˜æ¯”
 	
-	private String applicationInformation = "";	//ÖÆ×÷gifÎÄ¼şµÄÓ¦ÓÃ³ÌĞòÏà¹ØĞÅÏ¢
-	private int loopCount;	//Ñ­»·´ÎÊı
+	private String applicationInformation = "";	//åˆ¶ä½œgifæ–‡ä»¶çš„åº”ç”¨ç¨‹åºç›¸å…³ä¿¡æ¯
+	private int loopCount;	//å¾ªç¯æ¬¡æ•°
 	
-	private byte[] commentData;	//×÷ÕßºÍÆäËûÈÎºÎ·ÇÍ¼ĞÎÊı¾İºÍ¿ØÖÆĞÅÏ¢µÄÎÄ±¾ĞÅÏ¢
+	private byte[] commentData;	//ä½œè€…å’Œå…¶ä»–ä»»ä½•éå›¾å½¢æ•°æ®å’Œæ§åˆ¶ä¿¡æ¯çš„æ–‡æœ¬ä¿¡æ¯
 	
 	@SuppressWarnings("unused")
-	private int textGridPositonX;	//ÎÄ±¾x ¡¢y
+	private int textGridPositonX;	//æ–‡æœ¬x ã€y
 	@SuppressWarnings("unused")
 	private int textGridPositonY;
 	@SuppressWarnings("unused")
-	private int textGridWidth;	//ÎÄ±¾¿í¡¢¸ß
+	private int textGridWidth;	//æ–‡æœ¬å®½ã€é«˜
 	@SuppressWarnings("unused")
 	private int textGridHeight;
 	@SuppressWarnings("unused")
-	private int charCellWidth;	//×Ö·ûµ¥Ôª¸ñ¿í¡¢¸ß
+	private int charCellWidth;	//å­—ç¬¦å•å…ƒæ ¼å®½ã€é«˜
 	@SuppressWarnings("unused")
 	private int charCellHeight;
 	@SuppressWarnings("unused")
-	private int textForegroundColorIndex;	//ÎÄ±¾Ç°¾°É«¡¢±³¾°É«Ë÷Òı
+	private int textForegroundColorIndex;	//æ–‡æœ¬å‰æ™¯è‰²ã€èƒŒæ™¯è‰²ç´¢å¼•
 	@SuppressWarnings("unused")
 	private int textBackgroundColorIndex;
 	@SuppressWarnings("unused")
-	private byte[] plainTextData;	//ÏÔÊ¾µÄPlain TextĞÅÏ¢
+	private byte[] plainTextData;	//æ˜¾ç¤ºçš„Plain Textä¿¡æ¯
 	
-	private int displayMethod;	//±íÊ¾ÔÚ½øĞĞÖğÖ¡äÖÈ¾Ê±£¬Ç°Ò»Ö¡ÁôÏÂµÄÍ¼Ïñ×÷ºÎ´¦Àí£¬0£º²»×öÈÎºÎ´¦Àí 1£º±£ÁôÇ°Ò»Ö¡Í¼Ïñ£¬ÔÚ´Ë»ù´¡ÉÏ½øĞĞäÖÈ¾ 2£º»¹Ô­Îª±³¾°Í¼Ïñ 3£º»¹Ô­ÎªÉÏÒ»¸ö
+	private int displayMethod;	//è¡¨ç¤ºåœ¨è¿›è¡Œé€å¸§æ¸²æŸ“æ—¶ï¼Œå‰ä¸€å¸§ç•™ä¸‹çš„å›¾åƒä½œä½•å¤„ç†ï¼Œ0ï¼šä¸åšä»»ä½•å¤„ç† 1ï¼šä¿ç•™å‰ä¸€å¸§å›¾åƒï¼Œåœ¨æ­¤åŸºç¡€ä¸Šè¿›è¡Œæ¸²æŸ“ 2ï¼šè¿˜åŸä¸ºèƒŒæ™¯å›¾åƒ 3ï¼šè¿˜åŸä¸ºä¸Šä¸€ä¸ª
 	@SuppressWarnings("unused")
-	private boolean isUserInputFlag;	//±íÊ¾ÊÇ·ñĞèÒªÔÚµÃµ½ÓÃ»§µÄÊäÈëÊ±²Å½øĞĞÏÂÒ»Ö¡µÄÊäÈë£¨¾ßÌåÓÃ»§ÊäÈëÖ¸Ê²Ã´ÊÓÓ¦ÓÃ¶ø¶¨£©¡£false ±íÊ¾ÎŞĞèÓÃ»§ÊäÈë,true±íÊ¾ĞèÒªÓÃ»§ÊäÈë¡£
-	private boolean isTransparentFlag;	//Transparent Flag£¬µ±¸ÃÖµÎªtrueÊ±£¬ºóÃæµÄ Transparent Color Index Ö¸¶¨µÄÑÕÉ«½«±»µ±×öÍ¸Ã÷É«´¦Àí£¬ÎªfalseÔò²»×ö´¦Àí
-	private int transparentColorIndex;	//Í¸Ã÷Ë÷Òı
-	private int delayTime;	//ÓëÏÂÒ»Ö¡µÄÑÓ³ÙÊ±¼ä
+	private boolean isUserInputFlag;	//è¡¨ç¤ºæ˜¯å¦éœ€è¦åœ¨å¾—åˆ°ç”¨æˆ·çš„è¾“å…¥æ—¶æ‰è¿›è¡Œä¸‹ä¸€å¸§çš„è¾“å…¥ï¼ˆå…·ä½“ç”¨æˆ·è¾“å…¥æŒ‡ä»€ä¹ˆè§†åº”ç”¨è€Œå®šï¼‰ã€‚false è¡¨ç¤ºæ— éœ€ç”¨æˆ·è¾“å…¥,trueè¡¨ç¤ºéœ€è¦ç”¨æˆ·è¾“å…¥ã€‚
+	private boolean isTransparentFlag;	//Transparent Flagï¼Œå½“è¯¥å€¼ä¸ºtrueæ—¶ï¼Œåé¢çš„ Transparent Color Index æŒ‡å®šçš„é¢œè‰²å°†è¢«å½“åšé€æ˜è‰²å¤„ç†ï¼Œä¸ºfalseåˆ™ä¸åšå¤„ç†
+	private int transparentColorIndex;	//é€æ˜ç´¢å¼•
+	private int delayTime;	//ä¸ä¸‹ä¸€å¸§çš„å»¶è¿Ÿæ—¶é—´
 	
 	private InputStream is;
 	private List<GifFrame> frames = new ArrayList<GifFrame>();
@@ -105,7 +105,7 @@ public class MyGifDecoder {
 	
 	public void read(InputStream is) {
 		this.is = is;
-		frames.clear();	//Çå¿ÕÖ¡
+		frames.clear();	//æ¸…ç©ºå¸§
 		readHeader();
 		readBody();
 		renderFrames();
@@ -117,15 +117,15 @@ public class MyGifDecoder {
 	}
 	
 	private void renderFrames() {		
-		//µ±È«¾Ö¿í¡¢¸ß<=0Ê±£¬Ê¹ÓÃµÚÒ»Ö¡¿í¡¢¸ß×öÎªÈ«¾Ö¿í¡¢¸ß
+		//å½“å…¨å±€å®½ã€é«˜<=0æ—¶ï¼Œä½¿ç”¨ç¬¬ä¸€å¸§å®½ã€é«˜åšä¸ºå…¨å±€å®½ã€é«˜
 		if(width <= 0) width = frames.get(0).width;
 		if(height <= 0) height = frames.get(0).height;
-		//äÖÈ¾Ö¡
+		//æ¸²æŸ“å¸§
 		for(int i = 0 ; i < frames.size() ; i++) { 
-			GifFrame frame = frames.get(i);	//µ±Ç°Ö¡
+			GifFrame frame = frames.get(i);	//å½“å‰å¸§
 			frame.image = new BufferedImage(width , height , BufferedImage.TYPE_4BYTE_ABGR);
 			Graphics graphics = frame.image.getGraphics();
-			//äÖÈ¾±³¾°É«
+			//æ¸²æŸ“èƒŒæ™¯è‰²
 			if(colorTable != null && backgroundColorIndex > -1 && backgroundColorIndex < colorTable.length) {
 				int color = colorTable[backgroundColorIndex];
 				int r = ConverTo256Color.getR(color);
@@ -134,9 +134,9 @@ public class MyGifDecoder {
 				graphics.setColor(new Color(r , g , b));
 				graphics.fillRect(0 , 0, width, height);
 			}
-			//äÖÈ¾±³¾°
+			//æ¸²æŸ“èƒŒæ™¯
 			if(i > 0) {
-				GifFrame _frame = frames.get(i - 1);	//Ç°Ò»Ö¡
+				GifFrame _frame = frames.get(i - 1);	//å‰ä¸€å¸§
 				if(_frame.displayMethod != 2) {
 					graphics.drawImage(_frame.image , 0 , 0 , null);
 				} else {
@@ -144,9 +144,9 @@ public class MyGifDecoder {
 					graphics.fillRect(_frame.x , _frame.y , _frame.width , _frame.height);
 				} 
 			}
-			//ÊÍ·Å»­±Ê×ÊÔ´
+			//é‡Šæ”¾ç”»ç¬”èµ„æº
 			graphics.dispose();
-			//äÖÈ¾Ç°¾°
+			//æ¸²æŸ“å‰æ™¯
 			for(int y = 0 ; y < frame.height ; y++) {
 				for(int x = 0 ; x < frame.width ; x++) {
 					if(frame.imageColorIndex.length > 0) {
@@ -168,41 +168,41 @@ public class MyGifDecoder {
 		for(int  i = 0 ; i < 3 ; i++) {
 			signature += (char)read();
 		}
-		//°æ±¾
+		//ç‰ˆæœ¬
 		for(int i = 0 ; i < 3 ; i++) {
 			version += (char)read();
 		}
-		//¶ÁÈ¡È«¾Ö¿í¡¢¸ß
+		//è¯»å–å…¨å±€å®½ã€é«˜
 		width = readDoubleBytes();
 		height = readDoubleBytes();
-		//Ñ¹Ëõ°ü×°×Ö¶Î
+		//å‹ç¼©åŒ…è£…å­—æ®µ
 		int packedField = read();
-		//1´æÔÚÈ«¾ÖÑÕÉ«±í£¬0²»´æÔÚ
+		//1å­˜åœ¨å…¨å±€é¢œè‰²è¡¨ï¼Œ0ä¸å­˜åœ¨
 		isColorTable = (packedField & 0x80) != 0;
-		//É«²Ê·Ö±æÂÊ
+		//è‰²å½©åˆ†è¾¨ç‡
 		colorResolution = 1 << (((packedField & 0x70) >> 4) + 1);
-		//Sort Flag£¬ËüÓĞÁ½¸öÖµ 0 »ò 1£¬Èç¹ûÎª 0 Ôò Global Color Table ²»½øĞĞÅÅĞò£¬Îª 1 Ôò±íÊ¾ Global Color Table °´ÕÕ½µĞòÅÅÁĞ£¬³öÏÖÆµÂÊ×î¶àµÄÑÕÉ«ÅÅÔÚ×îÇ°Ãæ
+		//Sort Flagï¼Œå®ƒæœ‰ä¸¤ä¸ªå€¼ 0 æˆ– 1ï¼Œå¦‚æœä¸º 0 åˆ™ Global Color Table ä¸è¿›è¡Œæ’åºï¼Œä¸º 1 åˆ™è¡¨ç¤º Global Color Table æŒ‰ç…§é™åºæ’åˆ—ï¼Œå‡ºç°é¢‘ç‡æœ€å¤šçš„é¢œè‰²æ’åœ¨æœ€å‰é¢
 //		boolean isSort = (disposalMethod & 0xf) != 0;
-		//È«¾ÖÑÕÉ«±í´óĞ¡
+		//å…¨å±€é¢œè‰²è¡¨å¤§å°
 		int colorTableSize = 1 << ((packedField & 0x7) + 1);
-		//¶ÁÈ¡±³¾°É«Ë÷Òı
+		//è¯»å–èƒŒæ™¯è‰²ç´¢å¼•
 		backgroundColorIndex = read();
-		//Í¼Ïñ¿í¸ß±È
+		//å›¾åƒå®½é«˜æ¯”
 		pixelAspectRation = read();
-		//¶ÁÈ¡È«¾ÖÑÕÉ«±í
+		//è¯»å–å…¨å±€é¢œè‰²è¡¨
 		if(isColorTable) {	
 			colorTable = readColorTable(colorTableSize);
 		}	
 	}
 	
 	private void readBody() {
-		//¿é±êÊ¶
+		//å—æ ‡è¯†
 		int flag = -1;
-		while(flag != 0x3b) {		//0x3b GIF ½âÂë½áÊø
+		while(flag != 0x3b) {		//0x3b GIF è§£ç ç»“æŸ
 			flag = read();				
-			//¶ÁÈ¡¿éÊı¾İ
+			//è¯»å–å—æ•°æ®
 			switch(flag) {
-				case 0x21 : 		//À©Õ¹¿é
+				case 0x21 : 		//æ‰©å±•å—
 					flag = read();				
 					switch(flag) {
 						case 0xff : 		//Application Extension
@@ -227,145 +227,145 @@ public class MyGifDecoder {
 	}
 	
 	private void readApplicationExtension() {
-		//Application DataµÄ´óĞ¡£¬¹Ì¶¨Î»Îª11
+		//Application Dataçš„å¤§å°ï¼Œå›ºå®šä½ä¸º11
 		read();
-		//Ó¦ÓÃ³ÌĞòĞÅÏ¢£¬°üº¬ÖÆ×÷GIFÎÄ¼şµÄÓ¦ÓÃ³ÌĞòµÄÏà¹ØĞÅÏ¢
+		//åº”ç”¨ç¨‹åºä¿¡æ¯ï¼ŒåŒ…å«åˆ¶ä½œGIFæ–‡ä»¶çš„åº”ç”¨ç¨‹åºçš„ç›¸å…³ä¿¡æ¯
 		for(int i = 0 ; i < 11 ; i++) {
 			applicationInformation += (char)read();
 		}
-		//¿é´óĞ¡
+		//å—å¤§å°
 //		read();
 		//blockId
 //		read();
-		//Ñ­»·´ÎÊıÕ¼Á½¸ö×Ö½Ú
+		//å¾ªç¯æ¬¡æ•°å ä¸¤ä¸ªå­—èŠ‚
 //		loopCount = readDoubleBytes();			
-		//¿éÖÕ½áÆ÷
+		//å—ç»ˆç»“å™¨
 //		read();	
-		//¶ÁÈ¡¿éÊı¾İ
+		//è¯»å–å—æ•°æ®
 		byte[] blockData = readBlockData();
-		//Ñ­»·´ÎÊıÕ¼Á½¸ö×Ö½Ú
+		//å¾ªç¯æ¬¡æ•°å ä¸¤ä¸ªå­—èŠ‚
 		if(applicationInformation.equals("NETSCAPE2.0")) {
 			loopCount = blockData[1] | blockData[2] << 8;
 		}
 	}
 	
 	private void readCommentExtension() {
-		//Comment DataÓÃÀ´ËµÃ÷Í¼ĞÎ£¬×÷ÕßºÍÆäËûÈÎºÎ·ÇÍ¼ĞÎÊı¾İºÍ¿ØÖÆĞÅÏ¢µÄÎÄ±¾ĞÅÏ¢
+		//Comment Dataç”¨æ¥è¯´æ˜å›¾å½¢ï¼Œä½œè€…å’Œå…¶ä»–ä»»ä½•éå›¾å½¢æ•°æ®å’Œæ§åˆ¶ä¿¡æ¯çš„æ–‡æœ¬ä¿¡æ¯
 		commentData = readBlockData();
 	}
 	
 	private void readPlainTextExtension() {
-		//Block Size ¹Ì¶¨Öµ12
+		//Block Size å›ºå®šå€¼12
 		read();
-		//x¡¢y
+		//xã€y
 		textGridPositonX = readDoubleBytes();
 		textGridPositonY = readDoubleBytes();
-		//¿í¡¢¸ß
+		//å®½ã€é«˜
 		textGridWidth = readDoubleBytes();
 		textGridHeight = readDoubleBytes();
-		//×Ö·ûµ¥Ôª¸ñ¿í¡¢¸ß
+		//å­—ç¬¦å•å…ƒæ ¼å®½ã€é«˜
 		charCellWidth = read();
 		charCellHeight = read();
-		//ÎÄ±¾Ç°¾°É«Ë÷Òı
+		//æ–‡æœ¬å‰æ™¯è‰²ç´¢å¼•
 		textForegroundColorIndex = read();
-		//ÎÄ±¾±³¾°É«Ë÷Òı
+		//æ–‡æœ¬èƒŒæ™¯è‰²ç´¢å¼•
 		textBackgroundColorIndex = read();
-		//ÏÔÊ¾µÄ×Ö·û´®£¬ÓĞ¶à¸ö¿é×é³É
+		//æ˜¾ç¤ºçš„å­—ç¬¦ä¸²ï¼Œæœ‰å¤šä¸ªå—ç»„æˆ
 		plainTextData = readBlockData();
 	}
 	
 	private void readGraphicsControlExtension() {
-		//Block Size±íÊ¾½ÓÏÂÀ´µÄÓĞĞ§Êı¾İ×Ö½ÚÊı
+		//Block Sizeè¡¨ç¤ºæ¥ä¸‹æ¥çš„æœ‰æ•ˆæ•°æ®å­—èŠ‚æ•°
 		read();
-		//Ñ¹Ëõ°ü×°×Ö¶Î
+		//å‹ç¼©åŒ…è£…å­—æ®µ
 		int packedField = read();
-		//´Ó×ó±ßÒ»¡¢¶ş¡¢ÈıÎ»Reserved for Future User±£ÁôÎ»£¬ÔİÎŞÓÃ´¦
-		//Display Method£¬±íÊ¾ÔÚ½øĞĞÖğÖ¡äÖÈ¾Ê±£¬Ç°Ò»Ö¡ÁôÏÂµÄÍ¼Ïñ×÷ºÎ´¦Àí£¬0£º²»×öÈÎºÎ´¦Àí 1£º±£ÁôÇ°Ò»Ö¡Í¼Ïñ£¬ÔÚ´Ë»ù´¡ÉÏ½øĞĞäÖÈ¾ 2£º»¹Ô­Îª±³¾°Í¼Ïñ 3£º»¹Ô­ÎªÉÏÒ»¸ö
+		//ä»å·¦è¾¹ä¸€ã€äºŒã€ä¸‰ä½Reserved for Future Userä¿ç•™ä½ï¼Œæš‚æ— ç”¨å¤„
+		//Display Methodï¼Œè¡¨ç¤ºåœ¨è¿›è¡Œé€å¸§æ¸²æŸ“æ—¶ï¼Œå‰ä¸€å¸§ç•™ä¸‹çš„å›¾åƒä½œä½•å¤„ç†ï¼Œ0ï¼šä¸åšä»»ä½•å¤„ç† 1ï¼šä¿ç•™å‰ä¸€å¸§å›¾åƒï¼Œåœ¨æ­¤åŸºç¡€ä¸Šè¿›è¡Œæ¸²æŸ“ 2ï¼šè¿˜åŸä¸ºèƒŒæ™¯å›¾åƒ 3ï¼šè¿˜åŸä¸ºä¸Šä¸€ä¸ª
 		displayMethod = (packedField & 0x1c) >> 2;
-		//´ÓÓÒÊıµÚ¶şÎ»±íÊ¾ User Input Flag£¬±íÊ¾ÊÇ·ñĞèÒªÔÚµÃµ½ÓÃ»§µÄÊäÈëÊ±²Å½øĞĞÏÂÒ»Ö¡µÄÊäÈë£¨¾ßÌåÓÃ»§ÊäÈëÖ¸Ê²Ã´ÊÓÓ¦ÓÃ¶ø¶¨£©0 £º±íÊ¾ÎŞĞèÓÃ»§ÊäÈë  1£º±íÊ¾ĞèÒªÓÃ»§ÊäÈë
+		//ä»å³æ•°ç¬¬äºŒä½è¡¨ç¤º User Input Flagï¼Œè¡¨ç¤ºæ˜¯å¦éœ€è¦åœ¨å¾—åˆ°ç”¨æˆ·çš„è¾“å…¥æ—¶æ‰è¿›è¡Œä¸‹ä¸€å¸§çš„è¾“å…¥ï¼ˆå…·ä½“ç”¨æˆ·è¾“å…¥æŒ‡ä»€ä¹ˆè§†åº”ç”¨è€Œå®šï¼‰0 ï¼šè¡¨ç¤ºæ— éœ€ç”¨æˆ·è¾“å…¥  1ï¼šè¡¨ç¤ºéœ€è¦ç”¨æˆ·è¾“å…¥
 		isUserInputFlag = ((packedField & 0x2) >> 1) != 0;
-		//×îÓÒ±ßÒ»Î»£¬±íÊ¾ Transparent Flag£¬µ±¸ÃÖµÎª 1 Ê±£¬ºóÃæµÄ Transparent Color Index Ö¸¶¨µÄÑÕÉ«½«±»µ±×öÍ¸Ã÷É«´¦Àí£¬Îª 0 Ôò²»×ö´¦Àí
+		//æœ€å³è¾¹ä¸€ä½ï¼Œè¡¨ç¤º Transparent Flagï¼Œå½“è¯¥å€¼ä¸º 1 æ—¶ï¼Œåé¢çš„ Transparent Color Index æŒ‡å®šçš„é¢œè‰²å°†è¢«å½“åšé€æ˜è‰²å¤„ç†ï¼Œä¸º 0 åˆ™ä¸åšå¤„ç†
 		isTransparentFlag = (packedField & 0x1) != 0;
-		//±íÊ¾ GIF ¶¯Í¼Ã¿Ò»Ö¡Ö®¼äµÄ¼ä¸ô£¬µ¥Î»Îª°Ù·ÖÖ®Ò»Ãë£¬ËùÒÔ´ËÖµĞè*10£¬µ±Îª 0 Ê±¼ä¸ôÓÉ½âÂëÆ÷¹ÜÀí
+		//è¡¨ç¤º GIF åŠ¨å›¾æ¯ä¸€å¸§ä¹‹é—´çš„é—´éš”ï¼Œå•ä½ä¸ºç™¾åˆ†ä¹‹ä¸€ç§’ï¼Œæ‰€ä»¥æ­¤å€¼éœ€*10ï¼Œå½“ä¸º 0 æ—¶é—´éš”ç”±è§£ç å™¨ç®¡ç†
 		delayTime = readDoubleBytes() * 10;
-		//Í¸Ã÷É«Ë÷Òı
+		//é€æ˜è‰²ç´¢å¼•
 		transparentColorIndex = read();
-		//¿éÖÕ½áÆ÷
+		//å—ç»ˆç»“å™¨
 		read();
 	}
 	
 	private void readImageDescriptor() {
 		GifFrame frame = new GifFrame();
 		frames.add(frame);
-		//¶ÁÈ¡Ö¡x¡¢y·½ÏòÆ«ÒÆÁ¿
+		//è¯»å–å¸§xã€yæ–¹å‘åç§»é‡
 		frame.x = readDoubleBytes();
 		frame.y = readDoubleBytes();
-		//¶ÁÈ¡Ö¡¿í¡¢¸ß
+		//è¯»å–å¸§å®½ã€é«˜
 		frame.width = readDoubleBytes();
 		frame.height = readDoubleBytes();
-		//Ñ¹Ëõ°ü×°×Ö¶Î
+		//å‹ç¼©åŒ…è£…å­—æ®µ
 		int packedField = read();
-		//´Ó×óÊıµÚÒ»Î»£ºLocal Color Table Flag£¬±íÊ¾ÏÂÒ»Ö¡Í¼ÏñÊÇ·ñĞèÒªÒ»¸ö¶ÀÁ¢µÄÑÕÉ«±í£¬1 ÎªĞèÒª£¬0 Îª²»ĞèÒª
+		//ä»å·¦æ•°ç¬¬ä¸€ä½ï¼šLocal Color Table Flagï¼Œè¡¨ç¤ºä¸‹ä¸€å¸§å›¾åƒæ˜¯å¦éœ€è¦ä¸€ä¸ªç‹¬ç«‹çš„é¢œè‰²è¡¨ï¼Œ1 ä¸ºéœ€è¦ï¼Œ0 ä¸ºä¸éœ€è¦
 		boolean isColorTable = (packedField & 0x80) != 0;
-		//´Ó×óÊıµÚ¶şÎ»£ºInterlace Flag£¬±íÊ¾ÊÇ·ñĞèÒª¸ôĞĞÉ¨Ãè£¬1 ÎªĞèÒª£¬0 Îª²»ĞèÒª
+		//ä»å·¦æ•°ç¬¬äºŒä½ï¼šInterlace Flagï¼Œè¡¨ç¤ºæ˜¯å¦éœ€è¦éš”è¡Œæ‰«æï¼Œ1 ä¸ºéœ€è¦ï¼Œ0 ä¸ºä¸éœ€è¦
 //		frame.isInterlace = (packedField & 0x40) != 0;
-		//´Ó×óÊıµÚÈıÎ»£ºSort Flag£¬Èç¹ûĞèÒª Local Color Table µÄ»°£¬Õâ¸ö×Ö¶Î±íÊ¾ÆäÅÅÁĞË³Ğò£¬Í¬ Global Color Table
+		//ä»å·¦æ•°ç¬¬ä¸‰ä½ï¼šSort Flagï¼Œå¦‚æœéœ€è¦ Local Color Table çš„è¯ï¼Œè¿™ä¸ªå­—æ®µè¡¨ç¤ºå…¶æ’åˆ—é¡ºåºï¼ŒåŒ Global Color Table
 //		frame.isSort = (packedField & 0x20) != 0;
-		//´Ó×óÊıµÚËÄ¡¢ÎåÎ»£ºReserved For Future Use£¬±£ÁôÎ»
-		//´Ó×óÊı×îºóÈıÎ»£ºSize of Local Color Table£¬Í¬ Global Color Table ÖĞµÄ¸ÃÎ»£¬ÈçĞèÒª¾Ö²¿ÑÕÉ«±í£¬ÔòÆäÓĞĞ§
+		//ä»å·¦æ•°ç¬¬å››ã€äº”ä½ï¼šReserved For Future Useï¼Œä¿ç•™ä½
+		//ä»å·¦æ•°æœ€åä¸‰ä½ï¼šSize of Local Color Tableï¼ŒåŒ Global Color Table ä¸­çš„è¯¥ä½ï¼Œå¦‚éœ€è¦å±€éƒ¨é¢œè‰²è¡¨ï¼Œåˆ™å…¶æœ‰æ•ˆ
 		int colorTableSize = 1 << ((packedField & 0x7) + 1);
-		//´æÔÚ¾Ö²¿ÑÕÉ«±íÊ¹ÓÃ¾Ö²¿ÑÕÉ«±í£¬·ñÔòÊ¹ÓÃÈ«¾ÖÑÕÉ«±í
+		//å­˜åœ¨å±€éƒ¨é¢œè‰²è¡¨ä½¿ç”¨å±€éƒ¨é¢œè‰²è¡¨ï¼Œå¦åˆ™ä½¿ç”¨å…¨å±€é¢œè‰²è¡¨
 		if(isColorTable) {
 			frame.colorTable = readColorTable(colorTableSize);
 		} else {
 			frame.colorTable = colorTable;
 		}
-		//ÉèÖÃdisplayMethod
+		//è®¾ç½®displayMethod
 		frame.displayMethod = displayMethod;
-		//displayMethod³õÊ¼Îª0
+		//displayMethodåˆå§‹ä¸º0
 		displayMethod = 0;
-		//ÉèÖÃÍ¸Ã÷É«
+		//è®¾ç½®é€æ˜è‰²
 		if(isTransparentFlag) {
 			frame.transparentColorIndex = transparentColorIndex;
 		}
-		//isTransparentFlag³õÊ¼Îªfalse
+		//isTransparentFlagåˆå§‹ä¸ºfalse
 		isTransparentFlag = false;
-		//ÉèÖÃdelayTime
+		//è®¾ç½®delayTime
 		frame.delayTime = delayTime;	
-		//delayTime³õÊ¼Îª0
+		//delayTimeåˆå§‹ä¸º0
 		delayTime = 0;
 	
-		//LZW×îĞ¡±àÂëÎ»³¤
+		//LZWæœ€å°ç¼–ç ä½é•¿
 		int codeMiniSize = read();		
-		//Âë±í³õÊ¼´óĞ¡
+		//ç è¡¨åˆå§‹å¤§å°
 		int initCodeTableSize = 1 << codeMiniSize;
-		//µ±Ç°Ñ¹Ëõ±àÂëÎ»³¤
+		//å½“å‰å‹ç¼©ç¼–ç ä½é•¿
 		int currentCodeSize = codeMiniSize + 1;
-		//³õÊ¼»¯×Öµä
+		//åˆå§‹åŒ–å­—å…¸
 		String[] dictionary = initDictionary(initCodeTableSize);
-		//Çå³ıcode
+		//æ¸…é™¤code
 		int clearCode = initCodeTableSize;
-		//½áÊøcode
+		//ç»“æŸcode
 		int endOfInformation = clearCode + 1;
-		//µ±Ç°Âë±í×î´ócode
+		//å½“å‰ç è¡¨æœ€å¤§code
 		int maxCode = endOfInformation + 1;
-		//¶ÁÈ¡Ö¡Í¼Êı¾İ
+		//è¯»å–LZWç¼–ç å¸§å›¾æ•°æ®
 		byte[] frameData = readBlockData();		
-		//LZW±àÂë
+		//å¸§å›¾é¢œè‰²ç´¢å¼•
 		StringBuilder imageColorIndex = new StringBuilder();
 	 
-		String previous = null; 	//Ç°Ò»¸ö´®Âë
-		String current = null;		//µ±Ç°´®Âë
+		String previous = null; 	//å‰ä¸€ä¸ªä¸²ç 
+		String current = null;		//å½“å‰ä¸²ç 
 	
-		int index = 0;		 //frameDataÏÂ±ê
-		int startBit  = 0; 	//µ±Ç°code¿ªÊ¼bitÎ»ÖÃ
-		int endBit = 0; 	//µ±Ç°code½áÊøbitÎ»ÖÃ
-		int code = 0;		//µ±Ç°code
-		int remain = 0;		//Ê£ÓàÎ»³¤
-		int rightShift = 0;	//ÓÒÒÆ
-		int tempCode = 0;	//ÁÙÊ±code
-		int bitsSize = 0;	//µ±Ç°codeËùÕ¼bitÎ»×Ü´óĞ¡
-		int count = 0;	//¼ÆËãµ±Ç°codeËùÕ¼×Ö½ÚÊıÁ¿
+		int index = 0;		 //frameDataä¸‹æ ‡
+		int startBit  = 0; 	//å½“å‰codeå¼€å§‹bitä½ç½®
+		int endBit = 0; 	//å½“å‰codeç»“æŸbitä½ç½®
+		int code = 0;		//å½“å‰code
+		int remain = 0;		//å‰©ä½™ä½é•¿
+		int rightShift = 0;	//å³ç§»
+		int tempCode = 0;	//ä¸´æ—¶code
+		int bitsSize = 0;	//å½“å‰codeæ‰€å bitä½æ€»å¤§å°
+		int count = 0;	//è®¡ç®—å½“å‰codeæ‰€å å­—èŠ‚æ•°é‡
 		for(int i = 0 ; i < frame.width * frame.height ; i++) {
 			code = 0;
 			remain = currentCodeSize ;	
@@ -373,26 +373,26 @@ public class MyGifDecoder {
 			tempCode = 0 ;		
 			bitsSize = currentCodeSize + startBit ;	
 			count = bitsSize / 8 + (bitsSize % 8 > 0 ? 1 : 0);
-			//±éÀú¶ÁÈ¡µ±Ç°Ñ¹ËõÂë
+			//éå†è¯»å–å½“å‰å‹ç¼©ç 
 			for(int j = 0 ; j < count ; j++) {
 				if((startBit + remain) >= 8) {
-					endBit = 7;		//ÒòÎªÆğµãÊÇ´Ó0¿ªÊ¼£¬ËùÒÔ½áÊøÎ»×î´óÎª7
-					tempCode = cutBits(frameData[index] , startBit , endBit);		//½ØÈ¡µ±Ç°byteµÄbitsµÃµ½ÁÙÊ±code
-					remain = remain - (8 - startBit);		//Ê£ÓàÎ»³¤
-					startBit = 0;	//ÏÂ´Î¶ÁÈ¡¿ªÊ¼bitÎ»
+					endBit = 7;		//å› ä¸ºèµ·ç‚¹æ˜¯ä»0å¼€å§‹ï¼Œæ‰€ä»¥ç»“æŸä½æœ€å¤§ä¸º7
+					tempCode = cutBits(frameData[index] , startBit , endBit);		//æˆªå–å½“å‰byteçš„bitså¾—åˆ°ä¸´æ—¶code
+					remain = remain - (8 - startBit);		//å‰©ä½™ä½é•¿
+					startBit = 0;	//ä¸‹æ¬¡è¯»å–å¼€å§‹bitä½
 					index++;
 				} else {
-					endBit = startBit + remain - 1;	//ÒòÎªÆğµãÊÇ´Ó0¿ªÊ¼£¬ËùÒÔĞè¼õ1
+					endBit = startBit + remain - 1;	//å› ä¸ºèµ·ç‚¹æ˜¯ä»0å¼€å§‹ï¼Œæ‰€ä»¥éœ€å‡1
 					tempCode = cutBits(frameData[index] , startBit , endBit);
 					startBit = startBit + remain;
 				}
-				//ºÏ²¢code
-				code = code | (tempCode << rightShift);		//Ê¹ÓÃÒÆÎ»ºÏ²¢code
-				//¼ÆËãÏÂ´ÎºÏ²¢codeÓÒÒÆÎ»
+				//åˆå¹¶code
+				code = code | (tempCode << rightShift);		//ä½¿ç”¨ç§»ä½åˆå¹¶code
+				//è®¡ç®—ä¸‹æ¬¡åˆå¹¶codeå³ç§»ä½
 				rightShift = currentCodeSize - remain;
 			}
 
-			//ÖØÖÃ×Öµä
+			//é‡ç½®å­—å…¸
 			if(code == clearCode) {	
 				previous = null;
 				maxCode = endOfInformation + 1;
@@ -401,40 +401,40 @@ public class MyGifDecoder {
 				continue;
 			}
 		
-			//µ±Ç°Ö¡½âÂë½áÊø
+			//å½“å‰å¸§è§£ç ç»“æŸ
 			if(code == endOfInformation) {			
 				break;
 			}
  
-			/***********½âÂëÖ¡ÑÕÉ«Ë÷ÒıÊı¾İ*********/
+			/***********è§£ç å¸§é¢œè‰²ç´¢å¼•æ•°æ®*********/
 			
 			String seq = dictionary[code];
-			//seqÎªnull£¬È¡previous + previousµÄµÚÒ»¸ö×Ö·û¸³Öµ¸øcurrent
+			//seqä¸ºnullï¼Œå–previous + previousçš„ç¬¬ä¸€ä¸ªå­—ç¬¦èµ‹å€¼ç»™current
 			if(seq == null) {			
 				current = previous + previous.substring(0 , 1);
 			} else {
 				current = seq;
 			}
 			
-			//Ğ´Èë×Öµä
-			if(previous != null && maxCode < dictionary.length) {	//previousÎª¿ÕËµÃ÷µ±Ç°codeÎª³õÊ¼»¯×Öµäºó¶ÁÈ¡µÄµÚÒ»¸ö¸ùcode²¢²»ĞèÒªĞ´Èë×Öµä
+			//å†™å…¥å­—å…¸
+			if(previous != null && maxCode < dictionary.length) {	//previousä¸ºç©ºè¯´æ˜å½“å‰codeä¸ºåˆå§‹åŒ–å­—å…¸åè¯»å–çš„ç¬¬ä¸€ä¸ªæ ¹codeå¹¶ä¸éœ€è¦å†™å…¥å­—å…¸
 				seq = previous + current.substring(0 , 1);
-				dictionary[maxCode++] = seq;		//¼ÓÈë×Öµä
+				dictionary[maxCode++] = seq;		//åŠ å…¥å­—å…¸
 			}
 		
 			previous = current;
 		
 			imageColorIndex.append(current);
 			
-			/***********½âÂëÖ¡ÑÕÉ«Ë÷ÒıÊı¾İ*********/
+			/***********è§£ç å¸§é¢œè‰²ç´¢å¼•æ•°æ®*********/
 	
-			//Î»³¤+1£¬ÒòÎªGIF¹æ·¶×î´óÎ»³¤=12£¬ËùÒÔÎ»³¤=12ºó²»¿ÉÔÙÔö¼ÓÎ»³¤
+			//ä½é•¿+1ï¼Œå› ä¸ºGIFè§„èŒƒæœ€å¤§ä½é•¿=12ï¼Œæ‰€ä»¥ä½é•¿=12åä¸å¯å†å¢åŠ ä½é•¿
 			if(maxCode == 1 << currentCodeSize && currentCodeSize < 12) {				
 				currentCodeSize++;
 			}
 		}
 		
-		//imageColorIndex×ª»»ÎªÖ¡ÑÕÉ«Ë÷ÒıÊı×é(charÇ¿×ª³Éint¼È¿É)
+		//imageColorIndexè½¬æ¢ä¸ºå¸§é¢œè‰²ç´¢å¼•æ•°ç»„(charå¼ºè½¬æˆintæ—¢å¯)
 		frame.imageColorIndex = imageColorIndex.toString().toCharArray();		
 	}
 	
