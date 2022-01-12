@@ -13,23 +13,23 @@ import java.util.Map;
 
 public class MyGifEncoder {
 	
-	public final static int NOT_DISPOSE = 0;	//²»×öÈÎºÎ´¦Àí
-	public final static int RESERVED_FRAME = 1;	//±£ÁôÇ°Ò»Ö¡ÔÚ´Ë»ù´¡ÉÏäÖÈ¾
-	public final static int REVERT_TO_BACKGROUND = 2;	//»¹Ô­Îª±³¾°Í¼Ïñ
-	public final static int REVERT_TO_PREVIOUS = 3;		//»¹Ô­ÎªÉÏÒ»¸ö
+	public final static int NOT_DISPOSE = 0;	//ä¸åšä»»ä½•å¤„ç†
+	public final static int RESERVED_FRAME = 1;	//ä¿ç•™å‰ä¸€å¸§åœ¨æ­¤åŸºç¡€ä¸Šæ¸²æŸ“
+	public final static int REVERT_TO_BACKGROUND = 2;	//è¿˜åŸä¸ºèƒŒæ™¯å›¾åƒ
+	public final static int REVERT_TO_PREVIOUS = 3;		//è¿˜åŸä¸ºä¸Šä¸€ä¸ª
 	
-	private int width;	//È«¾Ö¿í¡¢¸ß
+	private int width;	//å…¨å±€å®½ã€é«˜
 	private int height;
-	private int[] colorTable;	//È«¾ÖÑÕÉ«±í
-	private int backgroundColorIndex = -1;	//È«¾Ö±³¾°É«Ë÷Òı	
-	private Color backgroundColor;		//È«¾Ö±³¾°É«
-	private int loopCount;	//Ñ­»·´ÎÊı£¬µ±Îª0Ê±ÎŞÏŞÑ­»·²¥·Å£¬Ä¬ÈÏÖµÎª0
-	private boolean startFlag = true;	//¿ªÊ¼±àÂë±êÊ¶
+	private int[] colorTable;	//å…¨å±€é¢œè‰²è¡¨
+	private int backgroundColorIndex = -1;	//å…¨å±€èƒŒæ™¯è‰²ç´¢å¼•	
+	private Color backgroundColor;		//å…¨å±€èƒŒæ™¯è‰²
+	private int loopCount;	//å¾ªç¯æ¬¡æ•°ï¼Œå½“ä¸º0æ—¶æ— é™å¾ªç¯æ’­æ”¾ï¼Œé»˜è®¤å€¼ä¸º0
+	private boolean startFlag = true;	//å¼€å§‹ç¼–ç æ ‡è¯†
 	private OutputStream os;
 
 	
 	/**
-	 * ÉèÖÃÈ«¾Ö¿í
+	 * è®¾ç½®å…¨å±€å®½
 	 * @param width
 	 */
 	public void setWidth(int width) {
@@ -37,7 +37,7 @@ public class MyGifEncoder {
 	}
 	
 	/**
-	 * ÉèÖÃÈ«¾Ö¸ß
+	 * è®¾ç½®å…¨å±€é«˜
 	 * @param height
 	 */
 	public void setHeight(int height) {
@@ -45,7 +45,7 @@ public class MyGifEncoder {
 	}
 	
 	/**
-	 * Ö¸¶¨µÚÒ»Ö¡µÄÒ»¸öÑÕÉ«×öÎª±³¾°É«
+	 * æŒ‡å®šç¬¬ä¸€å¸§çš„ä¸€ä¸ªé¢œè‰²åšä¸ºèƒŒæ™¯è‰²
 	 * @param backgroundColor 
 	 */
 	public void setBackgroundColor(Color backgroundColor) {
@@ -53,7 +53,7 @@ public class MyGifEncoder {
 	}
 	
 	/**
-	 * ÉèÖÃ¶¯»­Ñ­»·²¥·Å´ÎÊı£¬0ÎªÎŞÏŞ²¥·Å
+	 * è®¾ç½®åŠ¨ç”»å¾ªç¯æ’­æ”¾æ¬¡æ•°ï¼Œ0ä¸ºæ— é™æ’­æ”¾
 	 * @param loopCount
 	 */
 	public void setLoopCount(int loopCount) {
@@ -86,7 +86,7 @@ public class MyGifEncoder {
 	}
 	
 	/**
-	 * ³õÊ¼»¯È«¾ÖÊı¾İ
+	 * åˆå§‹åŒ–å…¨å±€æ•°æ®
 	 */
 	private void init() {
 		width = 0;
@@ -116,18 +116,18 @@ public class MyGifEncoder {
 	}
 	
 	/**
-	 * Ìí¼ÓÖ¡
-	 * @param image	Ö¡Í¼
-	 * @param transparentColor	Ö¸¶¨Ö¡ÖĞµÄÒ»¸öÑÕÉ«×öÎªÍ¸Ã÷É«
-	 * @param x	Ö¡xÆ«ÒÆ
-	 * @param y	Ö¡yÆ«ÒÆ
-	 * @param delayTime	ÓëÏÂÒ»Ö¡µÄÑÓ³ÙÊ±¼ä(MS)
-	 * @param displayMethod ±íÊ¾ÔÚ½øĞĞÖğÖ¡äÖÈ¾Ê±£¬Ç°Ò»Ö¡ÁôÏÂµÄÍ¼Ïñ×÷ºÎ´¦Àí£¬0£º²»×öÈÎºÎ´¦Àí 1£º±£ÁôÇ°Ò»Ö¡Í¼Ïñ£¬ÔÚ´Ë»ù´¡ÉÏ½øĞĞäÖÈ¾ 2£º»¹Ô­Îª±³¾°Í¼Ïñ 3£º»¹Ô­ÎªÉÏÒ»¸ö
+	 * æ·»åŠ å¸§
+	 * @param image	å¸§å›¾
+	 * @param transparentColor	æŒ‡å®šå¸§ä¸­çš„ä¸€ä¸ªé¢œè‰²åšä¸ºé€æ˜è‰²
+	 * @param x	å¸§xåç§»
+	 * @param y	å¸§yåç§»
+	 * @param delayTime	ä¸ä¸‹ä¸€å¸§çš„å»¶è¿Ÿæ—¶é—´(MS)
+	 * @param displayMethod è¡¨ç¤ºåœ¨è¿›è¡Œé€å¸§æ¸²æŸ“æ—¶ï¼Œå‰ä¸€å¸§ç•™ä¸‹çš„å›¾åƒä½œä½•å¤„ç†ï¼Œ0ï¼šä¸åšä»»ä½•å¤„ç† 1ï¼šä¿ç•™å‰ä¸€å¸§å›¾åƒï¼Œåœ¨æ­¤åŸºç¡€ä¸Šè¿›è¡Œæ¸²æŸ“ 2ï¼šè¿˜åŸä¸ºèƒŒæ™¯å›¾åƒ 3ï¼šè¿˜åŸä¸ºä¸Šä¸€ä¸ª
 	 * @return
 	 */
 	public MyGifEncoder addFrame(BufferedImage image , Color transparentColor , int x , int y , int delayTime , int displayMethod) {
 		GifFrame frame = new GifFrame();
-		frame.image = ConverTo256Color.create(image);
+		frame.image = ConverTo256Color.create(image);	//å¸§å›¾è½¬æ¢ä¸º256è‰²
 		frame.x = x;
 		frame.y = y;
 		frame.width = image.getWidth();
@@ -136,63 +136,63 @@ public class MyGifEncoder {
 		frame.displayMethod = displayMethod;
 		frame.colorTable = getColorTable(image);
 		frame.transparentColor = transparentColor;
-		//µ±startFlag==trueËµÃ÷µ±Ç°Ö¡ÎªµÚÒ»Ö¡
+		//å½“startFlag==trueè¯´æ˜å½“å‰å¸§ä¸ºç¬¬ä¸€å¸§
 		if(startFlag) {
-			//È«¾Öwidth<=0Ê±Ê¹ÓÃµÚÒ»Ö¡width
+			//å…¨å±€width<=0æ—¶ä½¿ç”¨ç¬¬ä¸€å¸§width
 			if(width <= 0) {
 				width = frame.width;
 			}
-			//È«¾Öheight<=0Ê±Ê¹ÓÃµÚÒ»Ö¡height
+			//å…¨å±€height<=0æ—¶ä½¿ç”¨ç¬¬ä¸€å¸§height
 			if(height <= 0) {
 				height = frame.height;
 			}
-			//È«¾ÖÑÕÉ«±í
+			//å…¨å±€é¢œè‰²è¡¨
 			colorTable = frame.colorTable;
-			//µ±È«¾ÖÑÕÉ«±í°üº¬µ±Ç°Ö¡ËùÓĞÑÕÉ«Ê±£¬Ê¹ÓÃÈ«¾ÖÑÕÉ«±í
+			//å½“å…¨å±€é¢œè‰²è¡¨åŒ…å«å½“å‰å¸§æ‰€æœ‰é¢œè‰²æ—¶ï¼Œä½¿ç”¨å…¨å±€é¢œè‰²è¡¨
 			frame.colorTable = null;
-			//Ğ´³ö¿éÊı¾İ
+			//å†™å‡ºå—æ•°æ®
 			writeHeader();
 			writeApplicationExtension();
 			startFlag = false;
 		} else if(isFullInclusionColor(colorTable , frame.colorTable)) {
-			//µ±È«¾ÖÑÕÉ«±í°üº¬µ±Ç°Ö¡ËùÓĞÑÕÉ«Ê±£¬Ê¹ÓÃÈ«¾ÖÑÕÉ«±í
+			//å½“å…¨å±€é¢œè‰²è¡¨åŒ…å«å½“å‰å¸§æ‰€æœ‰é¢œè‰²æ—¶ï¼Œä½¿ç”¨å…¨å±€é¢œè‰²è¡¨
 			frame.colorTable = null;
 		}
-		//Ğ´³ö¿éÊı¾İ
+		//å†™å‡ºå—æ•°æ®
 		writeGraphicsControlExtension(frame);
 		writeImageDescriptor(frame);
 		return this;
 	}
 	
 	private void writeHeader() {
-		//Ğ´ÈëgifÎÄ¼ş±êÊ¶
+		//å†™å…¥gifæ–‡ä»¶æ ‡è¯†
 		write("GIF".getBytes());
-		//Ğ´Èëgif°æ±¾
+		//å†™å…¥gifç‰ˆæœ¬
 		write("89a".getBytes());
-		//Ğ´ÈëÈ«¾Ö¿í
+		//å†™å…¥å…¨å±€å®½
 		writeDoubleBytes(width);
-		//Ğ´ÈëÈ«¾Ö¸ß
+		//å†™å…¥å…¨å±€é«˜
 		writeDoubleBytes(height);
-		//Ñ¹Ëõ°ü×°×Ö¶Î
+		//å‹ç¼©åŒ…è£…å­—æ®µ
 		int packedField = 0;
-		//´æÔÚÈ«¾ÖÑÕÉ«±í£¬µÚ1Î»Îª1·ñÔòÎª0
+		//å­˜åœ¨å…¨å±€é¢œè‰²è¡¨ï¼Œç¬¬1ä½ä¸º1å¦åˆ™ä¸º0
 		packedField = packedField | (colorTable == null ? 0 : 1) << 7;
-		//²ÊÉ«·Ö±æÂÊ
+		//å½©è‰²åˆ†è¾¨ç‡
 		packedField = packedField | (colorTable == null ? 0 : (Integer.toBinaryString(colorTable.length - 1).length() - 1)) << 4;
-		//Sort Flag£¬ËüÓĞÁ½¸öÖµ 0 »ò 1£¬Èç¹ûÎª 0 Ôò Global Color Table ²»½øĞĞÅÅĞò£¬Îª 1 Ôò±íÊ¾ Global Color Table °´ÕÕ½µĞòÅÅÁĞ£¬³öÏÖÆµÂÊ×î¶àµÄÑÕÉ«ÅÅÔÚ×îÇ°Ãæ
+		//Sort Flagï¼Œå®ƒæœ‰ä¸¤ä¸ªå€¼ 0 æˆ– 1ï¼Œå¦‚æœä¸º 0 åˆ™ Global Color Table ä¸è¿›è¡Œæ’åºï¼Œä¸º 1 åˆ™è¡¨ç¤º Global Color Table æŒ‰ç…§é™åºæ’åˆ—ï¼Œå‡ºç°é¢‘ç‡æœ€å¤šçš„é¢œè‰²æ’åœ¨æœ€å‰é¢
 		packedField = packedField | 0 << 3;
-		//È«¾ÖÑÕÉ«±í´óĞ¡
+		//å…¨å±€é¢œè‰²è¡¨å¤§å°
 		packedField = packedField | (colorTable == null ? 0 : (Integer.toBinaryString(colorTable.length - 1).length() - 1));
-		//Ğ´ÈëÑ¹Ëõ°ü×°×Ö¶Î
+		//å†™å…¥å‹ç¼©åŒ…è£…å­—æ®µ
 		write(packedField);
-		//Ğ´Èë±³¾°É«Ë÷Òı
+		//å†™å…¥èƒŒæ™¯è‰²ç´¢å¼•
 		if(backgroundColor != null) {
 			backgroundColorIndex = findResembleColorIndex(colorTable, backgroundColor);
 		}
 		write(backgroundColorIndex);
-		//Ğ´ÈëÏñËØ×İºá±È
+		//å†™å…¥åƒç´ çºµæ¨ªæ¯”
 		write(0);
-		//Ğ´ÈëÈ«¾ÖÑÕÉ«±í£¬ÒÀ´ÎĞ´Èër\g\bÖµ
+		//å†™å…¥å…¨å±€é¢œè‰²è¡¨ï¼Œä¾æ¬¡å†™å…¥r\g\bå€¼
 		if(colorTable != null) {
 			writeColorTable(colorTable);
 		}
@@ -203,17 +203,17 @@ public class MyGifEncoder {
 		write(0x21);
 		//flag0xff
 		write(0xff);
-		//Application DataµÄ´óĞ¡£¬¹Ì¶¨Î»Îª11
+		//Application Dataçš„å¤§å°ï¼Œå›ºå®šä½ä¸º11
 		write(11);	
-		//Ó¦ÓÃ³ÌĞòĞÅÏ¢£¬°üº¬ÖÆ×÷GIFÎÄ¼şµÄÓ¦ÓÃ³ÌĞòµÄÏà¹ØĞÅÏ¢£¬¹Ì¶¨Îª11¸ö×Ö·û
+		//åº”ç”¨ç¨‹åºä¿¡æ¯ï¼ŒåŒ…å«åˆ¶ä½œGIFæ–‡ä»¶çš„åº”ç”¨ç¨‹åºçš„ç›¸å…³ä¿¡æ¯ï¼Œå›ºå®šä¸º11ä¸ªå­—ç¬¦
 		write("NETSCAPE2.0".getBytes());
 		//blockSize
 		write(3);
 		//blockId
 		write(1);
-		//Ğ´ÈëÑ­»·´ÎÊı£¬0ÎŞÏŞÑ­»·
+		//å†™å…¥å¾ªç¯æ¬¡æ•°ï¼Œ0æ— é™å¾ªç¯
 		writeDoubleBytes(loopCount);
-		//¿éÖÕ½á
+		//å—ç»ˆç»“
 		write(0x00);		
 	}
 	
@@ -224,78 +224,78 @@ public class MyGifEncoder {
 		write(0xf9);
 		//blockSize
 		write(4);
-		//°ü×°×Ö¶Î
+		//åŒ…è£…å­—æ®µ
 		int packedField = 0;
-		//´Ó×ó±ßÒ»¡¢¶ş¡¢ÈıÎ»Reserved for Future User±£ÁôÎ»£¬ÔİÎŞÓÃ´¦
-		//Display Method£¬±íÊ¾ÔÚ½øĞĞÖğÖ¡äÖÈ¾Ê±£¬Ç°Ò»Ö¡ÁôÏÂµÄÍ¼Ïñ×÷ºÎ´¦Àí£¬0£º²»×öÈÎºÎ´¦Àí 1£º±£ÁôÇ°Ò»Ö¡Í¼Ïñ£¬ÔÚ´Ë»ù´¡ÉÏ½øĞĞäÖÈ¾ 2£º»¹Ô­Îª±³¾°Í¼Ïñ 3£º»¹Ô­ÎªÉÏÒ»¸ö
+		//ä»å·¦è¾¹ä¸€ã€äºŒã€ä¸‰ä½Reserved for Future Userä¿ç•™ä½ï¼Œæš‚æ— ç”¨å¤„
+		//Display Methodï¼Œè¡¨ç¤ºåœ¨è¿›è¡Œé€å¸§æ¸²æŸ“æ—¶ï¼Œå‰ä¸€å¸§ç•™ä¸‹çš„å›¾åƒä½œä½•å¤„ç†ï¼Œ0ï¼šä¸åšä»»ä½•å¤„ç† 1ï¼šä¿ç•™å‰ä¸€å¸§å›¾åƒï¼Œåœ¨æ­¤åŸºç¡€ä¸Šè¿›è¡Œæ¸²æŸ“ 2ï¼šè¿˜åŸä¸ºèƒŒæ™¯å›¾åƒ 3ï¼šè¿˜åŸä¸ºä¸Šä¸€ä¸ª
 		packedField = packedField | frame.displayMethod << 2;
-		//´ÓÓÒÊıµÚ¶şÎ»±íÊ¾ User Input Flag£¬±íÊ¾ÊÇ·ñĞèÒªÔÚµÃµ½ÓÃ»§µÄÊäÈëÊ±²Å½øĞĞÏÂÒ»Ö¡µÄÊäÈë£¨¾ßÌåÓÃ»§ÊäÈëÖ¸Ê²Ã´ÊÓÓ¦ÓÃ¶ø¶¨£©0 £º±íÊ¾ÎŞĞèÓÃ»§ÊäÈë  1£º±íÊ¾ĞèÒªÓÃ»§ÊäÈë
-		//×îÓÒ±ßÒ»Î»£¬±íÊ¾ Transparent Flag£¬µ±¸ÃÖµÎª 1 Ê±£¬ºóÃæµÄ Transparent Color Index Ö¸¶¨µÄÑÕÉ«½«±»µ±×öÍ¸Ã÷É«´¦Àí£¬Îª 0 Ôò²»×ö´¦Àí
+		//ä»å³æ•°ç¬¬äºŒä½è¡¨ç¤º User Input Flagï¼Œè¡¨ç¤ºæ˜¯å¦éœ€è¦åœ¨å¾—åˆ°ç”¨æˆ·çš„è¾“å…¥æ—¶æ‰è¿›è¡Œä¸‹ä¸€å¸§çš„è¾“å…¥ï¼ˆå…·ä½“ç”¨æˆ·è¾“å…¥æŒ‡ä»€ä¹ˆè§†åº”ç”¨è€Œå®šï¼‰0 ï¼šè¡¨ç¤ºæ— éœ€ç”¨æˆ·è¾“å…¥  1ï¼šè¡¨ç¤ºéœ€è¦ç”¨æˆ·è¾“å…¥
+		//æœ€å³è¾¹ä¸€ä½ï¼Œè¡¨ç¤º Transparent Flagï¼Œå½“è¯¥å€¼ä¸º 1 æ—¶ï¼Œåé¢çš„ Transparent Color Index æŒ‡å®šçš„é¢œè‰²å°†è¢«å½“åšé€æ˜è‰²å¤„ç†ï¼Œä¸º 0 åˆ™ä¸åšå¤„ç†
 		packedField = packedField | (frame.transparentColor == null ? 0 : 1);	
 		write(packedField);
-		//ÓëÏÂÒ»Ö¡µÄ¼ä¸ôÊ±¼ä
+		//ä¸ä¸‹ä¸€å¸§çš„é—´éš”æ—¶é—´
 		writeDoubleBytes(frame.delayTime);
-		//Í¸Ã÷É«Ë÷Òı
+		//é€æ˜è‰²ç´¢å¼•
 		if(frame.transparentColor != null) {
 			int[] colorTable = frame.colorTable == null ? this.colorTable : frame.colorTable;
 			frame.transparentColorIndex = findResembleColorIndex(colorTable, frame.transparentColor);
 		}
 		write(frame.transparentColorIndex);
-		//¿éÖÕ½áÆ÷
+		//å—ç»ˆç»“å™¨
 		write(0x00);
 	}
 	
 	private void writeImageDescriptor(GifFrame frame) {	
-		//¿é±êÊ¶0x2c
+		//å—æ ‡è¯†0x2c
 		write(0x2c);
 		
-		//Ğ´Èëx¡¢yÆ«ÒÆÁ¿
+		//å†™å…¥xã€yåç§»é‡
 		writeDoubleBytes(frame.x);
 		writeDoubleBytes(frame.y);
-		//Ğ´Èë¶ÀÁ¢¿í¡¢¸ß
+		//å†™å…¥ç‹¬ç«‹å®½ã€é«˜
 		writeDoubleBytes(frame.width);
 		writeDoubleBytes(frame.height);
 	
-		//Ñ¹Ëõ°ü×°×Ö¶Î
+		//å‹ç¼©åŒ…è£…å­—æ®µ
 		int packedField = 0;
-		//ÊÇ·ñ´æÔÚ¶ÀÁ¢ÑÕÉ«±í
+		//æ˜¯å¦å­˜åœ¨ç‹¬ç«‹é¢œè‰²è¡¨
 		boolean isColorTable = frame.colorTable != null;
-		//×óÆğµÚÒ»Î»ÊÇ·ñ´æÔÚ¶ÀÁ¢ÑÕÉ«±í
+		//å·¦èµ·ç¬¬ä¸€ä½æ˜¯å¦å­˜åœ¨ç‹¬ç«‹é¢œè‰²è¡¨
 		if(isColorTable) {
 			packedField = packedField | 1 << 7;
 		}
-		//ÑÕÉ«±íÅÅÁĞË³ĞòÄ¬ÈÏÎŞ£¬ËùÒÔÎŞĞèÉèÖÃ
-		//´Ó×óÊıµÚËÄ¡¢ÎåÎ»£ºReserved For Future Use£¬±£ÁôÎ»£¬ÎŞĞèÉèÖÃ
-		//ÑÕÉ«±í´óĞ¡3Î»
+		//é¢œè‰²è¡¨æ’åˆ—é¡ºåºé»˜è®¤æ— ï¼Œæ‰€ä»¥æ— éœ€è®¾ç½®
+		//ä»å·¦æ•°ç¬¬å››ã€äº”ä½ï¼šReserved For Future Useï¼Œä¿ç•™ä½ï¼Œæ— éœ€è®¾ç½®
+		//é¢œè‰²è¡¨å¤§å°3ä½
 		packedField = packedField | (isColorTable == true ? Integer.toBinaryString(frame.colorTable.length - 1).length() - 1 : 0);
-		//Ğ´Èë´¦ÖÃ·½·¨
+		//å†™å…¥å¤„ç½®æ–¹æ³•
 		write(packedField);	
 
-		//Ğ´ÈëÑÕÉ«±í
+		//å†™å…¥é¢œè‰²è¡¨
 		if(isColorTable) {
 			writeColorTable(frame.colorTable);
-		} else {	//µ±Ö¡ÑÕÉ«±íÎª¿ÕÊ±£¬Ê¹ÓÃÈ«¾ÖÑÕÉ«±í
+		} else {	//å½“å¸§é¢œè‰²è¡¨ä¸ºç©ºæ—¶ï¼Œä½¿ç”¨å…¨å±€é¢œè‰²è¡¨
 			frame.colorTable = colorTable;
 		}
 
-		//LZW×îĞ¡±àÂëÎ»³¤
+		//LZWæœ€å°ç¼–ç ä½é•¿
 		int codeMiniSize = Integer.toBinaryString(frame.colorTable.length - 1).length();
 		write(codeMiniSize);
 
-		//Âë±í³õÊ¼´óĞ¡
+		//ç è¡¨åˆå§‹å¤§å°
 		int initCodeTableSize = 1 << codeMiniSize;
-		//µ±Ç°Ñ¹Ëõ±àÂëÎ»³¤
+		//å½“å‰å‹ç¼©ç¼–ç ä½é•¿
 		int currentCodeSize = codeMiniSize + 1;
-		//Çå³ıcode
+		//æ¸…é™¤code
 		int clearCode = initCodeTableSize;
-		//½áÊøcode
+		//ç»“æŸcode
 		int endOfInformation = clearCode + 1;
-		//µ±Ç°Âë±í×î´ócode
+		//å½“å‰ç è¡¨æœ€å¤§code
 		int maxCode = endOfInformation + 1;
-		//×Öµä
+		//å­—å…¸
 		Map<String , Integer> dictionary = initDictionary(initCodeTableSize);
 
-		//Ö¡Í¼ÑÕÉ«Ë÷ÒıÖµ
+		//å¸§å›¾é¢œè‰²ç´¢å¼•å€¼
 		int[] frameColorIndex = new int[frame.image.getWidth() * frame.image.getHeight()];
 		for(int y = 0 ; y < frame.image.getHeight(); y++) {
 			for(int x = 0 ; x < frame.image.getWidth(); x++) {
@@ -308,23 +308,23 @@ public class MyGifEncoder {
 			}
 		}
 
-		String current = "";	//µ±Ç°±àÂë
-		String next = "";		//ÏÂÒ»¸ö±àÂë	
-		//Ö¡LZW±àÂëÊı¾İ
+		String current = "";	//å½“å‰ç¼–ç 
+		String next = "";		//ä¸‹ä¸€ä¸ªç¼–ç 	
+		//å¸§LZWç¼–ç æ•°æ®
 		int lzwDataSize = 0;
 		byte[] lzwData = new byte[frameColorIndex.length];	
 		for(int i = 0 ; i < frameColorIndex.length ; i++) {			
-			//µ±Ç°±àÂë´®
+			//å½“å‰ç¼–ç ä¸²
 			current = String.valueOf((char)frameColorIndex[i]);		
 			while(i + 1 < frameColorIndex.length && dictionary.get(current + String.valueOf((char)frameColorIndex[i + 1])) != null) {
 				i++;
 				current += String.valueOf((char)frameColorIndex[i]);
 			}
-			//ÏÂÒ»¸ö±àÂë
+			//ä¸‹ä¸€ä¸ªç¼–ç 
 			if(i + 1 < frameColorIndex.length) {
 				next = String.valueOf((char)frameColorIndex[i + 1]);
 			}
-			//±àÂëĞ´Èë×Öµä
+			//ç¼–ç å†™å…¥å­—å…¸
 			String seq = current + next;
 			dictionary.put(seq , maxCode++);
 
@@ -332,22 +332,22 @@ public class MyGifEncoder {
 			lzwDataSize = addLzwData(code , currentCodeSize , lzwData , lzwDataSize , false);
 			
 			if(i == frameColorIndex.length - 1) {			
-				//½áÊøcode
+				//ç»“æŸcode
 				code = endOfInformation;
 				lzwDataSize = addLzwData(code , currentCodeSize , lzwData , lzwDataSize , true);
 			}
 		
 			if(maxCode == 4096) {
-				//ÖØÖÃcode
+				//é‡ç½®code
 				code = clearCode;
 				lzwDataSize = addLzwData(code , currentCodeSize , lzwData , lzwDataSize , false);
-				//ÖØÖÃ×Öµä
+				//é‡ç½®å­—å…¸
 				currentCodeSize = codeMiniSize + 1;		
 				maxCode = endOfInformation + 1;
 				dictionary = initDictionary(initCodeTableSize);
 			}
 			
-			//Ôö¼Óµ±Ç°Î»³¤
+			//å¢åŠ å½“å‰ä½é•¿
 			if(maxCode - 1 == 1 << currentCodeSize && currentCodeSize < 12) {					
 				currentCodeSize++;
 			}
@@ -355,7 +355,7 @@ public class MyGifEncoder {
 		
 		writeBlockData(Arrays.copyOfRange(lzwData , 0 , lzwDataSize));
 		
-		//¿éÖÕ½áÆ÷
+		//å—ç»ˆç»“å™¨
 		write(0x00);
 	}
 	
@@ -376,7 +376,7 @@ public class MyGifEncoder {
 	}
 	
 	/**
-	 * ÕûĞÍÊı¾İÒÔÁ½¸ö×Ö½ÚĞ´Èë
+	 * æ•´å‹æ•°æ®ä»¥ä¸¤ä¸ªå­—èŠ‚å†™å…¥
 	 * @param n
 	 */
 	private void writeDoubleBytes(int n) {
@@ -385,8 +385,8 @@ public class MyGifEncoder {
 	}
 	
 	/**
-	 * Ğ´ÈëÒ»¸ö¿éÊı¾İ
-	 * Ğ´Èë¹æÔòÎª£º·Ö¸îblockDataÎªn¸öminBlockData£¬ÒÀ´ÎĞ´ÈëminBlockDataSize(±»·Ö¸îµÄ¿é´óĞ¡)¡¢minBlockData(±»·Ö¸î¿éÊı¾İ)...minBlockDataSize¡¢minBlockData
+	 * å†™å…¥ä¸€ä¸ªå—æ•°æ®
+	 * å†™å…¥è§„åˆ™ä¸ºï¼šåˆ†å‰²blockDataä¸ºnä¸ªminBlockDataï¼Œä¾æ¬¡å†™å…¥minBlockDataSize(è¢«åˆ†å‰²çš„å—å¤§å°)ã€minBlockData(è¢«åˆ†å‰²å—æ•°æ®)...minBlockDataSizeã€minBlockData
 	 * @param blockData
 	 */
 	private void writeBlockData(byte[] blockData) {
@@ -407,8 +407,8 @@ public class MyGifEncoder {
 	}
 	
 	/**
-	 * Ğ´ÈëÑÕÉ«±í
-	 * Ğ´Èë¹æÔò£ºÒÀ´ÎĞ´Èër\g\b...r\g\b
+	 * å†™å…¥é¢œè‰²è¡¨
+	 * å†™å…¥è§„åˆ™ï¼šä¾æ¬¡å†™å…¥r\g\b...r\g\b
 	 * @param colorTable
 	 */
 	private void writeColorTable(int[] colorTable) {
@@ -428,20 +428,20 @@ public class MyGifEncoder {
 	private int data = 0;
 	private int dataStart = 0;	
 	/**
-	 * Ìí¼Ólzw±àÂëµ½lzwDataÊı×é
-	 * @param code lzw±àÂë
-	 * @param currentCodeSize µ±Ç°lzw±àÂëÎ»³¤
-	 * @param lzwData lzw±àÂëÊı×é
-	 * @param lzwDataSize lzwÒÑ±àÂë¸öÊı
-	 * @param isEnd µ±Ç°±àÂëÊÇ·ñÎª½áÊøÂë
-	 * @return lzwÒÑ±àÂë¸öÊı
+	 * æ·»åŠ lzwç¼–ç åˆ°lzwDataæ•°ç»„
+	 * @param code lzwç¼–ç 
+	 * @param currentCodeSize å½“å‰lzwç¼–ç ä½é•¿
+	 * @param lzwData lzwç¼–ç æ•°ç»„
+	 * @param lzwDataSize lzwå·²ç¼–ç ä¸ªæ•°
+	 * @param isEnd å½“å‰ç¼–ç æ˜¯å¦ä¸ºç»“æŸç 
+	 * @return lzwå·²ç¼–ç ä¸ªæ•°
 	 */
 	private int addLzwData(int code , int currentCodeSize , byte[] lzwData , int lzwDataSize , boolean isEnd) { 
-		int codeStart  = 0; 	//µ±Ç°code¿ªÊ¼bitÎ»ÖÃ
-		int codeRemain = currentCodeSize;		//Ê£ÓàÎ»³¤
-		int codeEnd = codeStart + (codeRemain < 8 - dataStart ? codeRemain : 8 - dataStart); 	//µ±Ç°code½áÊøbitÎ»ÖÃ
-		int codeBitSize = currentCodeSize + dataStart;	//µ±Ç°codeËùÕ¼bitÎ»×Ü´óĞ¡
-		int count = codeBitSize / 8 + (codeBitSize % 8 > 0 ? 1 : 0);	//¼ÆËãµ±Ç°codeËùĞè×Ö½ÚÊıÁ¿
+		int codeStart  = 0; 	//å½“å‰codeå¼€å§‹bitä½ç½®
+		int codeRemain = currentCodeSize;		//å‰©ä½™ä½é•¿
+		int codeEnd = codeStart + (codeRemain < 8 - dataStart ? codeRemain : 8 - dataStart); 	//å½“å‰codeç»“æŸbitä½ç½®
+		int codeBitSize = currentCodeSize + dataStart;	//å½“å‰codeæ‰€å bitä½æ€»å¤§å°
+		int count = codeBitSize / 8 + (codeBitSize % 8 > 0 ? 1 : 0);	//è®¡ç®—å½“å‰codeæ‰€éœ€å­—èŠ‚æ•°é‡
 		int tempCode = 0;
 		for(int i = 0 ; i < count ; i++) {
 			tempCode = cutBits(code , codeStart , codeEnd);
@@ -466,8 +466,8 @@ public class MyGifEncoder {
 	}
 	
 	/**
-	 * primaryColorTableÑÕÉ«±íÊÇ·ñ°üº¬secondaryColorTableÑÕÉ«±íËùÓĞÑÕÉ« 
-	 * °üº¬·µ»Øtrue£¬²»°üº¬·µ»Øfalse
+	 * primaryColorTableé¢œè‰²è¡¨æ˜¯å¦åŒ…å«secondaryColorTableé¢œè‰²è¡¨æ‰€æœ‰é¢œè‰² 
+	 * åŒ…å«è¿”å›trueï¼Œä¸åŒ…å«è¿”å›false
 	 * @param primaryColorTable
 	 * @param secondaryColorTable
 	 * @return
@@ -484,7 +484,7 @@ public class MyGifEncoder {
 	}
 	
 	/**
-	 * ÑÕÉ«±í×ª»»ÎªMap
+	 * é¢œè‰²è¡¨è½¬æ¢ä¸ºMap
 	 * @param colorTable
 	 * @return
 	 */
@@ -498,7 +498,7 @@ public class MyGifEncoder {
 	}
 	
 	/**
-	 * ´ÓÖ¡Í¼ÖĞ»ñÈ¡ÑÕÉ«±í
+	 * ä»å¸§å›¾ä¸­è·å–é¢œè‰²è¡¨
 	 * @param image
 	 * @return
 	 */
@@ -520,7 +520,7 @@ public class MyGifEncoder {
 	}
 	
 	/**
-	 * ÔÚÑÕÉ«±íÖĞÕÒ×îÏàËÆµÄÑÕÉ«Ë÷Òı
+	 * åœ¨é¢œè‰²è¡¨ä¸­æ‰¾æœ€ç›¸ä¼¼çš„é¢œè‰²ç´¢å¼•
 	 * @param colorTable
 	 * @param color
 	 * @return
@@ -552,8 +552,8 @@ public class MyGifEncoder {
 	}
 	
 	/**
-	 * ³õÊ¼»¯LZW×Öµä
-	 * @param initCodeTableSize	³õÊ¼LZW×Öµä´óĞ¡
+	 * åˆå§‹åŒ–LZWå­—å…¸
+	 * @param initCodeTableSize	åˆå§‹LZWå­—å…¸å¤§å°
 	 * @return
 	 */
 	private Map<String , Integer> initDictionary(int initCodeTableSize){
@@ -561,16 +561,16 @@ public class MyGifEncoder {
 		for(int i = 0 ; i < initCodeTableSize ; i++) {
 			dictionary.put(String.valueOf((char)i), i);
 		}	
-		dictionary.put("ÖØÖÃ×Öµä--Õ¼Î»", initCodeTableSize);
-		dictionary.put("±àÂë½áÊø--Õ¼Î»", initCodeTableSize + 1);	
+		dictionary.put("é‡ç½®å­—å…¸--å ä½", initCodeTableSize);
+		dictionary.put("ç¼–ç ç»“æŸ--å ä½", initCodeTableSize + 1);	
 		return dictionary;
 	}
 	
 	/**
-	 * °´Î»½ØÈ¡²¢Î»ÒÆµ½×îÓÒ±ß
-	 * @param code ±»½ØÈ¡Êı¾İµÄ±àÂë
-	 * @param start	½ØÈ¡Î»¿ªÊ¼Î»ÖÃ
-	 * @param end ½ØÈ¡Î»½áÊøÎ»ÖÃ
+	 * æŒ‰ä½æˆªå–å¹¶ä½ç§»åˆ°æœ€å³è¾¹
+	 * @param code è¢«æˆªå–æ•°æ®çš„ç¼–ç 
+	 * @param start	æˆªå–ä½å¼€å§‹ä½ç½®
+	 * @param end æˆªå–ä½ç»“æŸä½ç½®
 	 * @return
 	 */
 	private int cutBits(int code , int start , int end) {		
