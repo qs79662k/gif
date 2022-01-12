@@ -460,7 +460,7 @@ public class MyGifDecoder {
 	}
 	
 	private int[] readColorTable(int colorTableSize) {
-		int[] colorTable = new int[256];
+		int[] colorTable = new int[colorTableSize];
 		for(int i = 0 ; i < colorTableSize ; i++) {
 			int r = read();
 			int g = read();
