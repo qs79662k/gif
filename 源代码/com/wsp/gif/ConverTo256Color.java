@@ -9,7 +9,7 @@ public class ConverTo256Color {
 	}
 	
 	public static BufferedImage create(BufferedImage image , int colorSize) {
-		//Í³¼ÆÍ¼Æ¬ÖĞR/G/BÖµ×î¸ß4Î»ËùµÃÑÕÉ«³öÏÖµÄÆµÂÊ
+		//ç»Ÿè®¡å›¾ç‰‡ä¸­R/G/Bå€¼æœ€é«˜4ä½æ‰€å¾—é¢œè‰²å‡ºç°çš„é¢‘ç‡
 		int[] colorsFrequency = new int[4096];
 		for(int y = 0 ; y < image.getHeight() ; y++) {
 			for(int x = 0 ; x < image.getWidth() ; x++) {
@@ -18,13 +18,13 @@ public class ConverTo256Color {
 			}
 		}
 		
-		//ÑÕÉ«Ğ´ÈëÑÕÉ«±íÖĞ£¬ÒòÎªÈ¡R\G\BÖµµÄ×î¸ß4Î»ËùµÃµ½µÄÖµÎª0-4095£¬ËùÒÔi×öÎªÑÕÉ«ÖµĞ´Èë
+		//é¢œè‰²å†™å…¥é¢œè‰²è¡¨ä¸­ï¼Œå› ä¸ºå–R\G\Bå€¼çš„æœ€é«˜4ä½æ‰€å¾—åˆ°çš„å€¼ä¸º0-4095ï¼Œæ‰€ä»¥iåšä¸ºé¢œè‰²å€¼å†™å…¥
 		int[] colors = new int[4096];
 		for(int i = 0 ; i < colors.length ; i++) {
 			colors[i] = i;
 		}
 		
-		//¸ù¾İÑÕÉ«ÔÚÍ¼Æ¬ÖĞ³öÏÖµÄÆµÂÊ¸ßµÍÅÅĞòÑÕÉ«±í
+		//æ ¹æ®é¢œè‰²åœ¨å›¾ç‰‡ä¸­å‡ºç°çš„é¢‘ç‡é«˜ä½æ’åºé¢œè‰²è¡¨
 		for(int i = 0 ; i < colors.length ; i++) {
 			for(int j = i+1 ; j < colors.length ; j++) {
 				int frequency1 = colorsFrequency[colors[i]];
@@ -37,19 +37,19 @@ public class ConverTo256Color {
 			}
 		}
 	
-		//ÖØÖÃÆµÂÊÖµ£¬·Ç³öÏÖÆµÂÊ×î¸ßµÄÇ°colorSize¸öÖµ¸ÄÎª-1
+		//é‡ç½®é¢‘ç‡å€¼ï¼Œéå‡ºç°é¢‘ç‡æœ€é«˜çš„å‰colorSizeä¸ªå€¼æ”¹ä¸º-1
 		for(int i = 0 ; i < colors.length ; i++) {
 			int color = colors[i];
 			if(i < colorSize) {
-				//ÔÚcolorSizeÉ«ÑÕÉ«±íÖĞ
+				//åœ¨colorSizeè‰²é¢œè‰²è¡¨ä¸­
 				colorsFrequency[color] = i;
 			} else {
-				//²»ÔÚcolorSizeÉ«ÑÕÉ«±íÖĞ
+				//ä¸åœ¨colorSizeè‰²é¢œè‰²è¡¨ä¸­
 				colorsFrequency[color] = -1;
 			}
 		}
 		
-		//ÖØÖÃÍ¼Æ¬ÑÕÉ«ÎªcolorSizeÉ«
+		//é‡ç½®å›¾ç‰‡é¢œè‰²ä¸ºcolorSizeè‰²
 		for(int y = 0 ; y < image.getHeight() ; y++) {
 			for(int x = 0 ; x < image.getWidth(); x++) {
 				int highColor = getHighColor(image.getRGB(x, y));
@@ -68,7 +68,7 @@ public class ConverTo256Color {
 		return findResembleColor(colors , colors.length , color);
 	}
 	
-	//ÕÒ×îÏàËÆµÄÑÕÉ«
+	//æ‰¾æœ€ç›¸ä¼¼çš„é¢œè‰²
 	public static int findResembleColor(int[] colors , int colorSize , int color) {
 		int r1 = getR(color);
 		int g1 = getG(color);
@@ -82,19 +82,19 @@ public class ConverTo256Color {
 			int r = Math.abs(r1 - r2);
 			int g = Math.abs(g1 - g2);
 			int b = Math.abs(b1 - b2);
-			double tempE = Math.sqrt(Math.pow(r, 2) + Math.pow(g, 2) + Math.pow(b, 2));
+			double _e = Math.sqrt(Math.pow(r, 2) + Math.pow(g, 2) + Math.pow(b, 2));
 			if(i == 0) {
-				e = tempE;
+				e = _e;
 				resembleColor = colors[i];
-			} else if(e > tempE) {
-				e = tempE;
+			} else if(e > _e) {
+				e = _e;
 				resembleColor = colors[i];
 			}
 		}
 		return resembleColor;
 	}
 	
-	//¸ß4Î»ÑÕÉ«
+	//é«˜4ä½é¢œè‰²
 	public static int getHighColor(int color) {
 		int r = (color & 0x0F00000) >> 20;
         int g = (color & 0x000F000) >> 12;
@@ -102,7 +102,7 @@ public class ConverTo256Color {
         return r << 8 | g << 4 | b;
 	}
 	
-	//»¹Ô­ÑÕÉ«
+	//è¿˜åŸé¢œè‰²
 	public static int getRevertColor(int color) {
         int r = (color & 0x0F00) << 12;
         int g = (color & 0x000F0) << 8;
