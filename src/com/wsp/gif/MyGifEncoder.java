@@ -317,8 +317,7 @@ public class MyGifEncoder {
 			//当前编码串
 			current = String.valueOf((char)frameColorIndex[i]);		
 			while(i + 1 < frameColorIndex.length && dictionary.get(current + String.valueOf((char)frameColorIndex[i + 1])) != null) {
-				i++;
-				current += String.valueOf((char)frameColorIndex[i]);
+				current += String.valueOf((char)frameColorIndex[++i]);
 			}
 			//下一个编码
 			if(i + 1 < frameColorIndex.length) {
